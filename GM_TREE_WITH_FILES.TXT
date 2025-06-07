@@ -1,0 +1,623 @@
+Ñòðóêòóðà ïàïîê
+Ñåðèéíûé íîìåð òîìà: D236-6A32
+C:\PROJECTS\GIDROMETEO_NEW
+¦   GM_TREE_WITH_FILES
+¦   package-lock.json
+¦   package.json
+¦   tsconfig.json
+¦   
++---data
+¦       input.txt
+¦       stations.json
+¦       
++---dist
+¦   ¦   currents.txt
+¦   ¦   decoder.js
+¦   ¦   main.js
+¦   ¦   output.txt
+¦   ¦   
+¦   +---copernicus
+¦   ¦       copernicus.js
+¦   ¦       
+¦   +---i18n
+¦   ¦       ru.json
+¦   ¦       
+¦   L---imagery
+¦           imagery.js
+¦           
++---node_modules
+¦   ¦   .package-lock.json
+¦   ¦   
+¦   +---.bin
+¦   ¦       mustache
+¦   ¦       mustache.cmd
+¦   ¦       mustache.ps1
+¦   ¦       tsc
+¦   ¦       tsc.cmd
+¦   ¦       tsc.ps1
+¦   ¦       tsserver
+¦   ¦       tsserver.cmd
+¦   ¦       tsserver.ps1
+¦   ¦       
+¦   +---@messageformat
+¦   ¦   +---core
+¦   ¦   ¦   ¦   compile-module.js
+¦   ¦   ¦   ¦   LICENSE
+¦   ¦   ¦   ¦   messageformat.js
+¦   ¦   ¦   ¦   package.json
+¦   ¦   ¦   ¦   README.md
+¦   ¦   ¦   ¦   
+¦   ¦   ¦   L---lib
+¦   ¦   ¦           bidi-mark-text.d.ts
+¦   ¦   ¦           compile-module.d.ts
+¦   ¦   ¦           compile-module.js
+¦   ¦   ¦           compiler.d.ts
+¦   ¦   ¦           compiler.js
+¦   ¦   ¦           messageformat.d.ts
+¦   ¦   ¦           messageformat.js
+¦   ¦   ¦           plurals.d.ts
+¦   ¦   ¦           
+¦   ¦   +---date-skeleton
+¦   ¦   ¦   ¦   LICENSE
+¦   ¦   ¦   ¦   package.json
+¦   ¦   ¦   ¦   README.md
+¦   ¦   ¦   ¦   
+¦   ¦   ¦   L---lib
+¦   ¦   ¦           get-date-formatter.d.ts
+¦   ¦   ¦           get-date-formatter.js
+¦   ¦   ¦           index.d.ts
+¦   ¦   ¦           index.js
+¦   ¦   ¦           options.d.ts
+¦   ¦   ¦           options.js
+¦   ¦   ¦           tokens.d.ts
+¦   ¦   ¦           tokens.js
+¦   ¦   ¦           
+¦   ¦   +---number-skeleton
+¦   ¦   ¦   ¦   LICENSE
+¦   ¦   ¦   ¦   package.json
+¦   ¦   ¦   ¦   README.md
+¦   ¦   ¦   ¦   
+¦   ¦   ¦   L---lib
+¦   ¦   ¦       ¦   errors.d.ts
+¦   ¦   ¦       ¦   errors.js
+¦   ¦   ¦       ¦   get-formatter.d.ts
+¦   ¦   ¦       ¦   get-formatter.js
+¦   ¦   ¦       ¦   index.d.ts
+¦   ¦   ¦       ¦   index.js
+¦   ¦   ¦       ¦   parse-pattern.d.ts
+¦   ¦   ¦       ¦   parse-pattern.js
+¦   ¦   ¦       ¦   parse-skeleton.d.ts
+¦   ¦   ¦       ¦   parse-skeleton.js
+¦   ¦   ¦       ¦   tsdoc-metadata.json
+¦   ¦   ¦       ¦   
+¦   ¦   ¦       +---numberformat
+¦   ¦   ¦       ¦       locales.d.ts
+¦   ¦   ¦       ¦       locales.js
+¦   ¦   ¦       ¦       modifier.d.ts
+¦   ¦   ¦       ¦       modifier.js
+¦   ¦   ¦       ¦       options.d.ts
+¦   ¦   ¦       ¦       options.js
+¦   ¦   ¦       ¦       
+¦   ¦   ¦       +---pattern-parser
+¦   ¦   ¦       ¦       affix-tokens.d.ts
+¦   ¦   ¦       ¦       affix-tokens.js
+¦   ¦   ¦       ¦       number-as-skeleton.d.ts
+¦   ¦   ¦       ¦       number-as-skeleton.js
+¦   ¦   ¦       ¦       number-tokens.d.ts
+¦   ¦   ¦       ¦       number-tokens.js
+¦   ¦   ¦       ¦       parse-tokens.d.ts
+¦   ¦   ¦       ¦       parse-tokens.js
+¦   ¦   ¦       ¦       
+¦   ¦   ¦       +---skeleton-parser
+¦   ¦   ¦       ¦       options.d.ts
+¦   ¦   ¦       ¦       options.js
+¦   ¦   ¦       ¦       parse-precision-blueprint.d.ts
+¦   ¦   ¦       ¦       parse-precision-blueprint.js
+¦   ¦   ¦       ¦       token-parser.d.ts
+¦   ¦   ¦       ¦       token-parser.js
+¦   ¦   ¦       ¦       
+¦   ¦   ¦       L---types
+¦   ¦   ¦               skeleton.d.ts
+¦   ¦   ¦               skeleton.js
+¦   ¦   ¦               unit.d.ts
+¦   ¦   ¦               unit.js
+¦   ¦   ¦               
+¦   ¦   +---parser
+¦   ¦   ¦   ¦   codemod-fix-backslash-escapes.js
+¦   ¦   ¦   ¦   LICENSE
+¦   ¦   ¦   ¦   package.json
+¦   ¦   ¦   ¦   README.md
+¦   ¦   ¦   ¦   
+¦   ¦   ¦   L---lib
+¦   ¦   ¦           lexer.d.ts
+¦   ¦   ¦           lexer.js
+¦   ¦   ¦           parser.d.ts
+¦   ¦   ¦           parser.js
+¦   ¦   ¦           
+¦   ¦   L---runtime
+¦   ¦       ¦   LICENSE
+¦   ¦       ¦   messages.d.ts
+¦   ¦       ¦   messages.js
+¦   ¦       ¦   package.json
+¦   ¦       ¦   README.md
+¦   ¦       ¦   
+¦   ¦       +---esm
+¦   ¦       ¦   ¦   cardinals.js
+¦   ¦       ¦   ¦   formatters.js
+¦   ¦       ¦   ¦   messages.js
+¦   ¦       ¦   ¦   package.json
+¦   ¦       ¦   ¦   plurals.js
+¦   ¦       ¦   ¦   runtime.js
+¦   ¦       ¦   ¦   
+¦   ¦       ¦   L---fmt
+¦   ¦       ¦           date.js
+¦   ¦       ¦           duration.js
+¦   ¦       ¦           number.js
+¦   ¦       ¦           time.js
+¦   ¦       ¦           
+¦   ¦       L---lib
+¦   ¦           ¦   cardinals.d.ts
+¦   ¦           ¦   cardinals.js
+¦   ¦           ¦   formatters.d.ts
+¦   ¦           ¦   formatters.js
+¦   ¦           ¦   messages.d.ts
+¦   ¦           ¦   messages.js
+¦   ¦           ¦   plurals.d.ts
+¦   ¦           ¦   plurals.js
+¦   ¦           ¦   runtime.d.ts
+¦   ¦           ¦   runtime.js
+¦   ¦           ¦   
+¦   ¦           L---fmt
+¦   ¦                   date.d.ts
+¦   ¦                   date.js
+¦   ¦                   duration.d.ts
+¦   ¦                   duration.js
+¦   ¦                   number.d.ts
+¦   ¦                   number.js
+¦   ¦                   time.d.ts
+¦   ¦                   time.js
+¦   ¦                   
+¦   +---@types
+¦   ¦   +---i18n
+¦   ¦   ¦       index.d.ts
+¦   ¦   ¦       LICENSE
+¦   ¦   ¦       package.json
+¦   ¦   ¦       README.md
+¦   ¦   ¦       
+¦   ¦   L---node
+¦   ¦       ¦   assert.d.ts
+¦   ¦       ¦   async_hooks.d.ts
+¦   ¦       ¦   buffer.buffer.d.ts
+¦   ¦       ¦   buffer.d.ts
+¦   ¦       ¦   child_process.d.ts
+¦   ¦       ¦   cluster.d.ts
+¦   ¦       ¦   console.d.ts
+¦   ¦       ¦   constants.d.ts
+¦   ¦       ¦   crypto.d.ts
+¦   ¦       ¦   dgram.d.ts
+¦   ¦       ¦   diagnostics_channel.d.ts
+¦   ¦       ¦   dns.d.ts
+¦   ¦       ¦   dom-events.d.ts
+¦   ¦       ¦   domain.d.ts
+¦   ¦       ¦   events.d.ts
+¦   ¦       ¦   fs.d.ts
+¦   ¦       ¦   globals.d.ts
+¦   ¦       ¦   globals.typedarray.d.ts
+¦   ¦       ¦   http.d.ts
+¦   ¦       ¦   http2.d.ts
+¦   ¦       ¦   https.d.ts
+¦   ¦       ¦   index.d.ts
+¦   ¦       ¦   inspector.d.ts
+¦   ¦       ¦   LICENSE
+¦   ¦       ¦   module.d.ts
+¦   ¦       ¦   net.d.ts
+¦   ¦       ¦   os.d.ts
+¦   ¦       ¦   package.json
+¦   ¦       ¦   path.d.ts
+¦   ¦       ¦   perf_hooks.d.ts
+¦   ¦       ¦   process.d.ts
+¦   ¦       ¦   punycode.d.ts
+¦   ¦       ¦   querystring.d.ts
+¦   ¦       ¦   readline.d.ts
+¦   ¦       ¦   README.md
+¦   ¦       ¦   repl.d.ts
+¦   ¦       ¦   sea.d.ts
+¦   ¦       ¦   stream.d.ts
+¦   ¦       ¦   string_decoder.d.ts
+¦   ¦       ¦   test.d.ts
+¦   ¦       ¦   timers.d.ts
+¦   ¦       ¦   tls.d.ts
+¦   ¦       ¦   trace_events.d.ts
+¦   ¦       ¦   tty.d.ts
+¦   ¦       ¦   url.d.ts
+¦   ¦       ¦   util.d.ts
+¦   ¦       ¦   v8.d.ts
+¦   ¦       ¦   vm.d.ts
+¦   ¦       ¦   wasi.d.ts
+¦   ¦       ¦   worker_threads.d.ts
+¦   ¦       ¦   zlib.d.ts
+¦   ¦       ¦   
+¦   ¦       +---assert
+¦   ¦       ¦       strict.d.ts
+¦   ¦       ¦       
+¦   ¦       +---compatibility
+¦   ¦       ¦       disposable.d.ts
+¦   ¦       ¦       index.d.ts
+¦   ¦       ¦       indexable.d.ts
+¦   ¦       ¦       iterators.d.ts
+¦   ¦       ¦       
+¦   ¦       +---dns
+¦   ¦       ¦       promises.d.ts
+¦   ¦       ¦       
+¦   ¦       +---fs
+¦   ¦       ¦       promises.d.ts
+¦   ¦       ¦       
+¦   ¦       +---readline
+¦   ¦       ¦       promises.d.ts
+¦   ¦       ¦       
+¦   ¦       +---stream
+¦   ¦       ¦       consumers.d.ts
+¦   ¦       ¦       promises.d.ts
+¦   ¦       ¦       web.d.ts
+¦   ¦       ¦       
+¦   ¦       +---timers
+¦   ¦       ¦       promises.d.ts
+¦   ¦       ¦       
+¦   ¦       L---ts5.6
+¦   ¦               buffer.buffer.d.ts
+¦   ¦               globals.typedarray.d.ts
+¦   ¦               index.d.ts
+¦   ¦               
+¦   +---debug
+¦   ¦   ¦   LICENSE
+¦   ¦   ¦   package.json
+¦   ¦   ¦   README.md
+¦   ¦   ¦   
+¦   ¦   L---src
+¦   ¦           browser.js
+¦   ¦           common.js
+¦   ¦           index.js
+¦   ¦           node.js
+¦   ¦           
+¦   +---fast-printf
+¦   ¦   ¦   LICENSE
+¦   ¦   ¦   package.json
+¦   ¦   ¦   README.md
+¦   ¦   ¦   tsconfig.json
+¦   ¦   ¦   
+¦   ¦   L---dist
+¦   ¦       +---src
+¦   ¦       ¦       boolean.d.ts
+¦   ¦       ¦       boolean.js
+¦   ¦       ¦       createPrintf.d.ts
+¦   ¦       ¦       createPrintf.js
+¦   ¦       ¦       printf.d.ts
+¦   ¦       ¦       printf.js
+¦   ¦       ¦       tokenize.d.ts
+¦   ¦       ¦       tokenize.js
+¦   ¦       ¦       types.d.ts
+¦   ¦       ¦       types.js
+¦   ¦       ¦       
+¦   ¦       L---test
+¦   ¦           L---fast-printf
+¦   ¦                   printf.d.ts
+¦   ¦                   printf.js
+¦   ¦                   tokenize.d.ts
+¦   ¦                   tokenize.js
+¦   ¦                   
+¦   +---i18n
+¦   ¦       i18n.js
+¦   ¦       index.js
+¦   ¦       LICENSE
+¦   ¦       package.json
+¦   ¦       README.md
+¦   ¦       SECURITY.md
+¦   ¦       
+¦   +---make-plural
+¦   ¦       cardinals.d.ts
+¦   ¦       cardinals.js
+¦   ¦       cardinals.mjs
+¦   ¦       examples.d.ts
+¦   ¦       examples.js
+¦   ¦       examples.json
+¦   ¦       examples.mjs
+¦   ¦       LICENSE
+¦   ¦       ordinals.d.ts
+¦   ¦       ordinals.js
+¦   ¦       ordinals.mjs
+¦   ¦       package.json
+¦   ¦       pluralCategories.d.ts
+¦   ¦       pluralCategories.js
+¦   ¦       pluralCategories.mjs
+¦   ¦       plurals.d.ts
+¦   ¦       plurals.js
+¦   ¦       plurals.mjs
+¦   ¦       ranges.d.ts
+¦   ¦       ranges.js
+¦   ¦       ranges.mjs
+¦   ¦       README.md
+¦   ¦       
+¦   +---math-interval-parser
+¦   ¦   ¦   dts-bundle.js
+¦   ¦   ¦   LICENSE
+¦   ¦   ¦   package.json
+¦   ¦   ¦   README.md
+¦   ¦   ¦   test.js
+¦   ¦   ¦   
+¦   ¦   L---lib
+¦   ¦           index.d.ts
+¦   ¦           index.js
+¦   ¦           math-interval-parser.d.ts
+¦   ¦           
+¦   +---moo
+¦   ¦       LICENSE
+¦   ¦       moo.js
+¦   ¦       package.json
+¦   ¦       README.md
+¦   ¦       
+¦   +---ms
+¦   ¦       index.js
+¦   ¦       license.md
+¦   ¦       package.json
+¦   ¦       readme.md
+¦   ¦       
+¦   +---mustache
+¦   ¦   ¦   CHANGELOG.md
+¦   ¦   ¦   LICENSE
+¦   ¦   ¦   mustache.js
+¦   ¦   ¦   mustache.min.js
+¦   ¦   ¦   mustache.mjs
+¦   ¦   ¦   package.json
+¦   ¦   ¦   README.md
+¦   ¦   ¦   
+¦   ¦   +---bin
+¦   ¦   ¦       mustache
+¦   ¦   ¦       
+¦   ¦   L---wrappers
+¦   ¦       +---dojo
+¦   ¦       ¦       mustache.js.post
+¦   ¦       ¦       mustache.js.pre
+¦   ¦       ¦       
+¦   ¦       +---jquery
+¦   ¦       ¦       mustache.js.post
+¦   ¦       ¦       mustache.js.pre
+¦   ¦       ¦       
+¦   ¦       +---mootools
+¦   ¦       ¦       mustache.js.post
+¦   ¦       ¦       mustache.js.pre
+¦   ¦       ¦       
+¦   ¦       +---qooxdoo
+¦   ¦       ¦       mustache.js.post
+¦   ¦       ¦       mustache.js.pre
+¦   ¦       ¦       
+¦   ¦       L---yui3
+¦   ¦               mustache.js.post
+¦   ¦               mustache.js.pre
+¦   ¦               
+¦   +---safe-identifier
+¦   ¦       index.d.ts
+¦   ¦       index.js
+¦   ¦       index.mjs
+¦   ¦       LICENSE
+¦   ¦       package.json
+¦   ¦       README.md
+¦   ¦       reserved.js
+¦   ¦       
+¦   +---typescript
+¦   ¦   ¦   LICENSE.txt
+¦   ¦   ¦   package.json
+¦   ¦   ¦   README.md
+¦   ¦   ¦   SECURITY.md
+¦   ¦   ¦   ThirdPartyNoticeText.txt
+¦   ¦   ¦   
+¦   ¦   +---bin
+¦   ¦   ¦       tsc
+¦   ¦   ¦       tsserver
+¦   ¦   ¦       
+¦   ¦   L---lib
+¦   ¦       ¦   lib.d.ts
+¦   ¦       ¦   lib.decorators.d.ts
+¦   ¦       ¦   lib.decorators.legacy.d.ts
+¦   ¦       ¦   lib.dom.asynciterable.d.ts
+¦   ¦       ¦   lib.dom.d.ts
+¦   ¦       ¦   lib.dom.iterable.d.ts
+¦   ¦       ¦   lib.es2015.collection.d.ts
+¦   ¦       ¦   lib.es2015.core.d.ts
+¦   ¦       ¦   lib.es2015.d.ts
+¦   ¦       ¦   lib.es2015.generator.d.ts
+¦   ¦       ¦   lib.es2015.iterable.d.ts
+¦   ¦       ¦   lib.es2015.promise.d.ts
+¦   ¦       ¦   lib.es2015.proxy.d.ts
+¦   ¦       ¦   lib.es2015.reflect.d.ts
+¦   ¦       ¦   lib.es2015.symbol.d.ts
+¦   ¦       ¦   lib.es2015.symbol.wellknown.d.ts
+¦   ¦       ¦   lib.es2016.array.include.d.ts
+¦   ¦       ¦   lib.es2016.d.ts
+¦   ¦       ¦   lib.es2016.full.d.ts
+¦   ¦       ¦   lib.es2016.intl.d.ts
+¦   ¦       ¦   lib.es2017.arraybuffer.d.ts
+¦   ¦       ¦   lib.es2017.d.ts
+¦   ¦       ¦   lib.es2017.date.d.ts
+¦   ¦       ¦   lib.es2017.full.d.ts
+¦   ¦       ¦   lib.es2017.intl.d.ts
+¦   ¦       ¦   lib.es2017.object.d.ts
+¦   ¦       ¦   lib.es2017.sharedmemory.d.ts
+¦   ¦       ¦   lib.es2017.string.d.ts
+¦   ¦       ¦   lib.es2017.typedarrays.d.ts
+¦   ¦       ¦   lib.es2018.asyncgenerator.d.ts
+¦   ¦       ¦   lib.es2018.asynciterable.d.ts
+¦   ¦       ¦   lib.es2018.d.ts
+¦   ¦       ¦   lib.es2018.full.d.ts
+¦   ¦       ¦   lib.es2018.intl.d.ts
+¦   ¦       ¦   lib.es2018.promise.d.ts
+¦   ¦       ¦   lib.es2018.regexp.d.ts
+¦   ¦       ¦   lib.es2019.array.d.ts
+¦   ¦       ¦   lib.es2019.d.ts
+¦   ¦       ¦   lib.es2019.full.d.ts
+¦   ¦       ¦   lib.es2019.intl.d.ts
+¦   ¦       ¦   lib.es2019.object.d.ts
+¦   ¦       ¦   lib.es2019.string.d.ts
+¦   ¦       ¦   lib.es2019.symbol.d.ts
+¦   ¦       ¦   lib.es2020.bigint.d.ts
+¦   ¦       ¦   lib.es2020.d.ts
+¦   ¦       ¦   lib.es2020.date.d.ts
+¦   ¦       ¦   lib.es2020.full.d.ts
+¦   ¦       ¦   lib.es2020.intl.d.ts
+¦   ¦       ¦   lib.es2020.number.d.ts
+¦   ¦       ¦   lib.es2020.promise.d.ts
+¦   ¦       ¦   lib.es2020.sharedmemory.d.ts
+¦   ¦       ¦   lib.es2020.string.d.ts
+¦   ¦       ¦   lib.es2020.symbol.wellknown.d.ts
+¦   ¦       ¦   lib.es2021.d.ts
+¦   ¦       ¦   lib.es2021.full.d.ts
+¦   ¦       ¦   lib.es2021.intl.d.ts
+¦   ¦       ¦   lib.es2021.promise.d.ts
+¦   ¦       ¦   lib.es2021.string.d.ts
+¦   ¦       ¦   lib.es2021.weakref.d.ts
+¦   ¦       ¦   lib.es2022.array.d.ts
+¦   ¦       ¦   lib.es2022.d.ts
+¦   ¦       ¦   lib.es2022.error.d.ts
+¦   ¦       ¦   lib.es2022.full.d.ts
+¦   ¦       ¦   lib.es2022.intl.d.ts
+¦   ¦       ¦   lib.es2022.object.d.ts
+¦   ¦       ¦   lib.es2022.regexp.d.ts
+¦   ¦       ¦   lib.es2022.string.d.ts
+¦   ¦       ¦   lib.es2023.array.d.ts
+¦   ¦       ¦   lib.es2023.collection.d.ts
+¦   ¦       ¦   lib.es2023.d.ts
+¦   ¦       ¦   lib.es2023.full.d.ts
+¦   ¦       ¦   lib.es2023.intl.d.ts
+¦   ¦       ¦   lib.es2024.arraybuffer.d.ts
+¦   ¦       ¦   lib.es2024.collection.d.ts
+¦   ¦       ¦   lib.es2024.d.ts
+¦   ¦       ¦   lib.es2024.full.d.ts
+¦   ¦       ¦   lib.es2024.object.d.ts
+¦   ¦       ¦   lib.es2024.promise.d.ts
+¦   ¦       ¦   lib.es2024.regexp.d.ts
+¦   ¦       ¦   lib.es2024.sharedmemory.d.ts
+¦   ¦       ¦   lib.es2024.string.d.ts
+¦   ¦       ¦   lib.es5.d.ts
+¦   ¦       ¦   lib.es6.d.ts
+¦   ¦       ¦   lib.esnext.array.d.ts
+¦   ¦       ¦   lib.esnext.collection.d.ts
+¦   ¦       ¦   lib.esnext.d.ts
+¦   ¦       ¦   lib.esnext.decorators.d.ts
+¦   ¦       ¦   lib.esnext.disposable.d.ts
+¦   ¦       ¦   lib.esnext.float16.d.ts
+¦   ¦       ¦   lib.esnext.full.d.ts
+¦   ¦       ¦   lib.esnext.intl.d.ts
+¦   ¦       ¦   lib.esnext.iterator.d.ts
+¦   ¦       ¦   lib.esnext.promise.d.ts
+¦   ¦       ¦   lib.scripthost.d.ts
+¦   ¦       ¦   lib.webworker.asynciterable.d.ts
+¦   ¦       ¦   lib.webworker.d.ts
+¦   ¦       ¦   lib.webworker.importscripts.d.ts
+¦   ¦       ¦   lib.webworker.iterable.d.ts
+¦   ¦       ¦   tsc.js
+¦   ¦       ¦   tsserver.js
+¦   ¦       ¦   tsserverlibrary.d.ts
+¦   ¦       ¦   tsserverlibrary.js
+¦   ¦       ¦   typescript.d.ts
+¦   ¦       ¦   typescript.js
+¦   ¦       ¦   typesMap.json
+¦   ¦       ¦   typingsInstaller.js
+¦   ¦       ¦   watchGuard.js
+¦   ¦       ¦   _tsc.js
+¦   ¦       ¦   _tsserver.js
+¦   ¦       ¦   _typingsInstaller.js
+¦   ¦       ¦   
+¦   ¦       +---cs
+¦   ¦       ¦       diagnosticMessages.generated.json
+¦   ¦       ¦       
+¦   ¦       +---de
+¦   ¦       ¦       diagnosticMessages.generated.json
+¦   ¦       ¦       
+¦   ¦       +---es
+¦   ¦       ¦       diagnosticMessages.generated.json
+¦   ¦       ¦       
+¦   ¦       +---fr
+¦   ¦       ¦       diagnosticMessages.generated.json
+¦   ¦       ¦       
+¦   ¦       +---it
+¦   ¦       ¦       diagnosticMessages.generated.json
+¦   ¦       ¦       
+¦   ¦       +---ja
+¦   ¦       ¦       diagnosticMessages.generated.json
+¦   ¦       ¦       
+¦   ¦       +---ko
+¦   ¦       ¦       diagnosticMessages.generated.json
+¦   ¦       ¦       
+¦   ¦       +---pl
+¦   ¦       ¦       diagnosticMessages.generated.json
+¦   ¦       ¦       
+¦   ¦       +---pt-br
+¦   ¦       ¦       diagnosticMessages.generated.json
+¦   ¦       ¦       
+¦   ¦       +---ru
+¦   ¦       ¦       diagnosticMessages.generated.json
+¦   ¦       ¦       
+¦   ¦       +---tr
+¦   ¦       ¦       diagnosticMessages.generated.json
+¦   ¦       ¦       
+¦   ¦       +---zh-cn
+¦   ¦       ¦       diagnosticMessages.generated.json
+¦   ¦       ¦       
+¦   ¦       L---zh-tw
+¦   ¦               diagnosticMessages.generated.json
+¦   ¦               
+¦   L---undici-types
+¦           agent.d.ts
+¦           api.d.ts
+¦           balanced-pool.d.ts
+¦           cache.d.ts
+¦           client.d.ts
+¦           connector.d.ts
+¦           content-type.d.ts
+¦           cookies.d.ts
+¦           diagnostics-channel.d.ts
+¦           dispatcher.d.ts
+¦           env-http-proxy-agent.d.ts
+¦           errors.d.ts
+¦           eventsource.d.ts
+¦           fetch.d.ts
+¦           file.d.ts
+¦           filereader.d.ts
+¦           formdata.d.ts
+¦           global-dispatcher.d.ts
+¦           global-origin.d.ts
+¦           handlers.d.ts
+¦           header.d.ts
+¦           index.d.ts
+¦           interceptors.d.ts
+¦           LICENSE
+¦           mock-agent.d.ts
+¦           mock-client.d.ts
+¦           mock-errors.d.ts
+¦           mock-interceptor.d.ts
+¦           mock-pool.d.ts
+¦           package.json
+¦           patch.d.ts
+¦           pool-stats.d.ts
+¦           pool.d.ts
+¦           proxy-agent.d.ts
+¦           readable.d.ts
+¦           README.md
+¦           retry-agent.d.ts
+¦           retry-handler.d.ts
+¦           util.d.ts
+¦           webidl.d.ts
+¦           websocket.d.ts
+¦           
+L---src
+    ¦   decoder.ts
+    ¦   main.ts
+    ¦   
+    +---copernicus
+    ¦       copernicus.ts
+    ¦       
+    +---i18n
+    ¦       ru.json
+    ¦       
+    L---imagery
+            imagery.ts
+            
