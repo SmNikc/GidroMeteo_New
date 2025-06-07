@@ -20,7 +20,6 @@ async function main() {
 
     fs.writeFileSync('output.txt', weatherOutput, 'utf8');
     console.log('output.txt создан.');
-    console.log(weatherOutput);
 
     const currents = await fetchCurrents({});
     fs.writeFileSync('currents.txt', JSON.stringify(currents, null, 2), 'utf8');

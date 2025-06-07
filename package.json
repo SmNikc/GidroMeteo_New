@@ -4,7 +4,7 @@
   "description": "Decoder for GMDSS meteorological data",
   "main": "dist/main.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && mkdir dist\\i18n 2>nul && copy src\\i18n\\ru.json dist\\i18n\\ru.json",
     "start": "node dist/main.js"
   },
   "dependencies": {

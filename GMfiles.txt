@@ -1,0 +1,82 @@
+Ñòðóêòóðà ïàïîê
+Ñåðèéíûé íîìåð òîìà: D236-6A32
+C:\PROJECTS\GIDROMETEO_NEW
++---data
++---dist
+¦   +---copernicus
+¦   +---i18n
+¦   L---imagery
++---node_modules
+¦   +---.bin
+¦   +---@messageformat
+¦   ¦   +---core
+¦   ¦   ¦   L---lib
+¦   ¦   +---date-skeleton
+¦   ¦   ¦   L---lib
+¦   ¦   +---number-skeleton
+¦   ¦   ¦   L---lib
+¦   ¦   ¦       +---numberformat
+¦   ¦   ¦       +---pattern-parser
+¦   ¦   ¦       +---skeleton-parser
+¦   ¦   ¦       L---types
+¦   ¦   +---parser
+¦   ¦   ¦   L---lib
+¦   ¦   L---runtime
+¦   ¦       +---esm
+¦   ¦       ¦   L---fmt
+¦   ¦       L---lib
+¦   ¦           L---fmt
+¦   +---@types
+¦   ¦   +---i18n
+¦   ¦   L---node
+¦   ¦       +---assert
+¦   ¦       +---compatibility
+¦   ¦       +---dns
+¦   ¦       +---fs
+¦   ¦       +---readline
+¦   ¦       +---stream
+¦   ¦       +---timers
+¦   ¦       L---ts5.6
+¦   +---debug
+¦   ¦   L---src
+¦   +---fast-printf
+¦   ¦   L---dist
+¦   ¦       +---src
+¦   ¦       L---test
+¦   ¦           L---fast-printf
+¦   +---i18n
+¦   +---make-plural
+¦   +---math-interval-parser
+¦   ¦   L---lib
+¦   +---moo
+¦   +---ms
+¦   +---mustache
+¦   ¦   +---bin
+¦   ¦   L---wrappers
+¦   ¦       +---dojo
+¦   ¦       +---jquery
+¦   ¦       +---mootools
+¦   ¦       +---qooxdoo
+¦   ¦       L---yui3
+¦   +---safe-identifier
+¦   +---typescript
+¦   ¦   +---bin
+¦   ¦   L---lib
+¦   ¦       +---cs
+¦   ¦       +---de
+¦   ¦       +---es
+¦   ¦       +---fr
+¦   ¦       +---it
+¦   ¦       +---ja
+¦   ¦       +---ko
+¦   ¦       +---pl
+¦   ¦       +---pt-br
+¦   ¦       +---ru
+¦   ¦       +---tr
+¦   ¦       +---zh-cn
+¦   ¦       L---zh-tw
+¦   L---undici-types
+L---src
+    +---copernicus
+    +---i18n
+    L---imagery
