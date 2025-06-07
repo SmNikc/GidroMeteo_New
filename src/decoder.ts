@@ -51,8 +51,9 @@ interface WeatherMessage {
   };
 }
 
-// Хранилище сообщений
-const messages: WeatherMessage[] = [];
+// Кэш для результатов декодирования
+let lastInput: string | null = null;
+let cachedMessages: WeatherMessage[] | null = null;
 
 // Загрузка станций
 const stations: { [key: string]: string } = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/stations.json'), 'utf8'));
@@ -81,6 +82,13 @@ interface FSMContext {
 
 // Декодирование сообщения
 function decodeMessage(input: string): WeatherMessage[] {
+  // Проверка кэша
+  if (input === lastInput && cachedMessages) {
+    console.log('Using cached messages'); // Отладка
+    return cachedMessages;
+  }
+
+  const messages: WeatherMessage[] = []; // Локальная переменная
   const lines = input.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
   let context: FSMContext = {
     state: State.INITIAL,
@@ -93,12 +101,9 @@ function decodeMessage(input: string): WeatherMessage[] {
   };
   console.log('Processing input lines:', lines); // Отладка
 
-  messages.length = 0; // Очищаем предыдущие сообщения
-
   for (const line of lines) {
     const upperLine = line.toUpperCase();
-    processLine(line, context);
-    if (upperLine.startsWith('ZCZC') && messages.length > 0 && context.state === State.INITIAL) {
+    if (upperLine.startsWith('ZCZC') && messages.length > 0) {
       messages.push(context.message);
       context = {
         state: State.HEADER,
@@ -110,12 +115,19 @@ function decodeMessage(input: string): WeatherMessage[] {
         },
       };
       context.message.sections.header = [line];
+      continue;
     }
+    processLine(line, context);
   }
 
   if (context.message.sections.header?.length || context.message.sections.part1?.length || context.message.sections.part2 || context.message.sections.part3?.length) {
     messages.push(context.message);
   }
+
+  // Сохраняем в кэш
+  lastInput = input;
+  cachedMessages = [...messages];
+
   return messages;
 }
 
@@ -135,22 +147,25 @@ function processLine(line: string, context: FSMContext): void {
     case State.HEADER:
       if (upperLine.includes('GALE WARNING')) {
         context.state = State.PART_1;
-        context.message.sections.part1 = [];
+        context.message.sections.part1 = context.message.sections.part1 || []; // Инициализация part1
         context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: i18n.__('gale_warning'), speed: '' } };
+        context.message.sections.part1.push(context.currentForecast!);
       } else if (upperLine.includes('SYNOPSIS')) {
         context.state = State.SYNOPSIS;
         context.message.sections.part2 = { synopsis: { time: line.replace(/^SYNOPSIS AT\s+/, ''), pressures: [] } };
       } else if (upperLine.includes('FORECAST')) {
         context.state = State.PART_3;
-        context.message.sections.part3 = [];
+        context.message.sections.part3 = context.message.sections.part3 || [];
         context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' } };
       } else if (upperLine === 'NNNN') {
         context.state = State.INITIAL;
       } else if (/^\d{6}\s+UTC\s+[A-Z]{3}\s+\d{2}$/.test(upperLine)) {
         context.message.date = line;
-        context.message.sections.header!.push(line);
+        context.message.sections.header = context.message.sections.header || [];
+        context.message.sections.header.push(line);
       } else {
-        context.message.sections.header!.push(line);
+        context.message.sections.header = context.message.sections.header || [];
+        context.message.sections.header.push(line);
         if (upperLine.includes('ISSUED BY')) {
           context.message.source = line.replace(/^ISSUED\s+BY\s*/i, '');
         }
@@ -160,17 +175,21 @@ function processLine(line: string, context: FSMContext): void {
     case State.PART_1:
       if (upperLine.includes('SYNOPSIS') || upperLine.includes('PART 2')) {
         if (context.currentForecast) {
-          context.message.sections.part1!.push(context.currentForecast);
+          context.message.sections.part1 = context.message.sections.part1 || [];
+          context.message.sections.part1.push(context.currentForecast);
           context.currentForecast = undefined;
         }
         context.state = State.SYNOPSIS;
         context.message.sections.part2 = { synopsis: { time: line.replace(/^SYNOPSIS AT\s+/, ''), pressures: [] } };
       } else if (upperLine.includes('GALE WARNING')) {
         if (context.currentForecast) {
-          context.message.sections.part1!.push(context.currentForecast);
+          context.message.sections.part1 = context.message.sections.part1 || [];
+          context.message.sections.part1.push(context.currentForecast);
         }
         context.state = State.FORECAST;
         context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: i18n.__('gale_warning'), speed: '' } };
+        context.message.sections.part1 = context.message.sections.part1 || [];
+        context.message.sections.part1.push(context.currentForecast!);
       } else if (/^\d{5}(,\s*\d{5})*/.test(line)) {
         context.currentStationCodes = line.split(',').map(code => code.trim());
         if (context.currentForecast) {
@@ -183,31 +202,36 @@ function processLine(line: string, context: FSMContext): void {
         }
       } else if (upperLine.includes('WINDS')) {
         const windMatch = line.match(/WINDS\s+([A-Z\/]+)\s*(GUSTS)?\s*(\d+\s*(?:TO\s*\d+)?\s*MS)/i);
-        if (windMatch) {
-          if (context.currentForecast) {
-            context.currentForecast.wind = {
-              direction: windMatch[1],
-              speed: windMatch[3],
-              gusts: windMatch[2] ? windMatch[3] : undefined,
-            };
-            context.message.sections.part1!.push(context.currentForecast);
-            context.currentForecast = undefined;
-            context.currentStationCodes = undefined;
-          }
+        if (windMatch && context.currentForecast) {
+          context.currentForecast.wind = {
+            direction: windMatch[1],
+            speed: windMatch[3],
+            gusts: windMatch[2] ? windMatch[3] : undefined,
+          };
+          context.message.sections.part1 = context.message.sections.part1 || [];
+          context.message.sections.part1.push(context.currentForecast);
+          context.currentForecast = undefined;
+          context.currentStationCodes = undefined;
+        }
+      } else if (upperLine.includes('HEIGHT OF WAVES')) {
+        if (context.currentForecast) {
+          context.currentForecast.seas = line.replace(/^HEIGHT OF WAVES\s+/, '');
         }
       } else if (upperLine === 'NNNN') {
         if (context.currentForecast) {
-          context.message.sections.part1!.push(context.currentForecast);
+          context.message.sections.part1 = context.message.sections.part1 || [];
+          context.message.sections.part1.push(context.currentForecast);
           context.currentForecast = undefined;
         }
         context.state = State.INITIAL;
       } else if (upperLine.includes('PETER THE GREAT GULF') || upperLine.includes('REGION')) {
         if (context.currentForecast) {
-          context.currentForecast.region = line;
-        } else {
-          context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' }, region: line };
-          context.message.sections.part1!.push(context.currentForecast);
+          context.message.sections.part1 = context.message.sections.part1 || [];
+          context.message.sections.part1.push(context.currentForecast);
         }
+        context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' }, region: line };
+        context.message.sections.part1 = context.message.sections.part1 || [];
+        context.message.sections.part1.push(context.currentForecast!);
       } else if (context.currentForecast) {
         context.currentForecast.timeRange.to += ` ${line}`; // Временной диапазон
       }
@@ -222,12 +246,13 @@ function processLine(line: string, context: FSMContext): void {
         context.currentIceReport = { region: '', direction: '', coordinates: [] };
       } else if (upperLine.includes('FORECAST') || upperLine.includes('PART 3')) {
         context.state = State.PART_3;
-        context.message.sections.part3 = [];
+        context.message.sections.part3 = context.message.sections.part3 || [];
         context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' } };
       } else if (upperLine === 'NNNN') {
         context.state = State.INITIAL;
       } else {
-        context.message.sections.part2!.synopsis!.pressures.push({
+        context.message.sections.part2 = context.message.sections.part2 || { synopsis: { time: '', pressures: [] } };
+        context.message.sections.part2.synopsis!.pressures.push({
           type: 'INFO',
           hpa: '',
           position: line,
@@ -239,17 +264,19 @@ function processLine(line: string, context: FSMContext): void {
     case State.SYNOPSIS:
       if (upperLine.includes('FORECAST') || upperLine.includes('PART 3')) {
         context.state = State.PART_3;
-        context.message.sections.part3 = [];
+        context.message.sections.part3 = context.message.sections.part3 || [];
         context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' } };
       } else if (upperLine.includes('ICE')) {
-        context.message.sections.part2!.synopsis = context.currentSynopsis;
+        context.message.sections.part2 = context.message.sections.part2 || { synopsis: { time: '', pressures: [] } };
+        context.message.sections.part2.synopsis = context.currentSynopsis;
         context.currentSynopsis = undefined;
         context.state = State.ICE_REPORT;
         context.currentIceReport = { region: '', direction: '', coordinates: [] };
       } else if (upperLine === 'NNNN') {
         context.state = State.INITIAL;
       } else {
-        context.message.sections.part2!.synopsis!.pressures.push({
+        context.message.sections.part2 = context.message.sections.part2 || { synopsis: { time: '', pressures: [] } };
+        context.message.sections.part2.synopsis!.pressures.push({
           type: 'INFO',
           hpa: '',
           position: line,
@@ -260,11 +287,11 @@ function processLine(line: string, context: FSMContext): void {
 
     case State.ICE_REPORT:
       if (upperLine.includes('PART 3') || upperLine.includes('FORECAST')) {
-        context.message.sections.part2!.iceReports = context.message.sections.part2!.iceReports || [];
-        context.message.sections.part2!.iceReports.push(context.currentIceReport!);
+        context.message.sections.part2 = context.message.sections.part2 || { synopsis: { time: '', pressures: [] }, iceReports: [] };
+        context.message.sections.part2.iceReports!.push(context.currentIceReport!);
         context.currentIceReport = undefined;
         context.state = State.PART_3;
-        context.message.sections.part3 = [];
+        context.message.sections.part3 = context.message.sections.part3 || [];
         context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' } };
       } else if (upperLine.match(/^[A-Z4-5-]+$/)) {
         context.currentIceReport!.region = line;
@@ -272,8 +299,8 @@ function processLine(line: string, context: FSMContext): void {
         context.currentIceReport!.direction = line.match(/ICE\s+([A-Z\/]+)/i)![1];
         context.currentIceReport!.coordinates.push(line.replace(/ICE\s+[A-Z\/]+\s+TO\s+/, ''));
       } else if (upperLine.includes('WINDS')) {
-        context.message.sections.part2!.iceReports = context.message.sections.part2!.iceReports || [];
-        context.message.sections.part2!.iceReports.push(context.currentIceReport!);
+        context.message.sections.part2 = context.message.sections.part2 || { synopsis: { time: '', pressures: [] }, iceReports: [] };
+        context.message.sections.part2.iceReports!.push(context.currentIceReport!);
         context.currentIceReport = undefined;
         context.state = State.FORECAST;
         context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' } };
@@ -309,7 +336,8 @@ function processLine(line: string, context: FSMContext): void {
         context.currentForecast!.iceAccretion = line.replace(/^ICE ACCRETION\s+/, '');
       } else if (upperLine === 'NNNN') {
         if (context.currentForecast) {
-          context.message.sections.part3!.push(context.currentForecast);
+          context.message.sections.part3 = context.message.sections.part3 || [];
+          context.message.sections.part3.push(context.currentForecast);
           context.currentForecast = undefined;
           context.currentStationCodes = undefined;
         }
@@ -319,10 +347,12 @@ function processLine(line: string, context: FSMContext): void {
         context.currentForecast!.timeRange = { from, to };
       } else if (upperLine.includes('PETER THE GREAT GULF') || upperLine.includes('REGION')) {
         if (context.currentForecast) {
-          context.message.sections.part3!.push(context.currentForecast);
+          context.message.sections.part3 = context.message.sections.part3 || [];
+          context.message.sections.part3.push(context.currentForecast);
         }
         context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' }, region: line };
-        context.message.sections.part3!.push(context.currentForecast);
+        context.message.sections.part3 = context.message.sections.part3 || [];
+        context.message.sections.part3.push(context.currentForecast!);
       } else if (context.currentForecast) {
         context.currentForecast.timeRange.to += ` ${line}`; // Временной диапазон
       }
@@ -350,6 +380,7 @@ function processLine(line: string, context: FSMContext): void {
         if (context.message.sections.part3) {
           context.message.sections.part3.push(context.currentForecast!);
         } else if (context.message.sections.part1) {
+          context.message.sections.part1 = context.message.sections.part1 || [];
           context.message.sections.part1.push(context.currentForecast!);
         }
         context.currentForecast = undefined;

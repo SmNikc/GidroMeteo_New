@@ -5,3 +5,4 @@ dist/
 *.log
 output.txt
 currents.txt
+~$*
