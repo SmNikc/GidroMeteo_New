@@ -198,20 +198,20 @@ function processLine(line: string, context: FSMContext): void {
           from = line.trim();
         }
         context.currentForecast.timeRange = { from, to };
-      } else if (/SECOND HALF NIGHT|FIRST HALF DAY|NIGHT/i.test(upperLine)) {
+      } else if (/SECOND HALF NIGHT|FIRST HALF DAY/i.test(upperLine)) {
         if (!context.currentForecast) {
           context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' } };
         }
         context.currentForecast.timeRange = { from: line.trim(), to: '' };
       } else if (upperLine.includes('WINDS')) {
-        const windMatch = line.match(/WINDS\s+([A-Z\s\/]+?)(?=\s+(?:\d|GUSTS))(?:\s+(\d+\s*(?:TO\s*\d+)?\s*MS))?(?:\s+GUSTS\s+(\d+\s*(?:TO\s*\d+)?\s*MS))?/i);
+        const windMatch = line.match(/WINDS\s+([A-Z\s\/]+?)(?:\s+(\d+\s*(?:TO\s*\d+)?\s*MS))?(?:\s+GUSTS\s*(\d+\s*(?:TO\s*\d+)?\s*MS))?/i);
         if (windMatch) {
           if (!context.currentForecast) {
             context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' } };
           }
           context.currentForecast.wind = {
             direction: windMatch[1].trim(),
-            speed: windMatch[2] || windMatch[3] || '',
+            speed: windMatch[2] || '',
             gusts: windMatch[3] || undefined,
           };
         }
@@ -336,14 +336,14 @@ function processLine(line: string, context: FSMContext): void {
           context.currentForecast = { stationCodes: context.currentStationCodes, timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' } };
         }
       } else if (upperLine.includes('WINDS')) {
-        const windMatch = line.match(/WINDS\s+([A-Z\s\/]+?)(?=\s+(?:\d|GUSTS))(?:\s+(\d+\s*(?:TO\s*\d+)?\s*MS))?(?:\s+GUSTS\s+(\d+\s*(?:TO\s*\d+)?\s*MS))?/i);
+        const windMatch = line.match(/WINDS\s+([A-Z\s\/]+?)(?:\s+(\d+\s*(?:TO\s*\d+)?\s*MS))?(?:\s+GUSTS\s*(\d+\s*(?:TO\s*\d+)?\s*MS))?/i);
         if (windMatch) {
           if (!context.currentForecast) {
             context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' } };
           }
           context.currentForecast.wind = {
             direction: windMatch[1].trim(),
-            speed: windMatch[2] || windMatch[3] || '',
+            speed: windMatch[2] || '',
             gusts: windMatch[3] || undefined,
           };
         }
@@ -394,7 +394,7 @@ function processLine(line: string, context: FSMContext): void {
           from = line.trim();
         }
         context.currentForecast.timeRange = { from, to };
-      } else if (/SECOND HALF NIGHT|FIRST HALF DAY|NIGHT/i.test(upperLine)) {
+      } else if (/SECOND HALF NIGHT|FIRST HALF DAY/i.test(upperLine)) {
         if (!context.currentForecast) {
           context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' } };
         }
@@ -422,14 +422,14 @@ function processLine(line: string, context: FSMContext): void {
 
     case State.FORECAST:
       if (upperLine.includes('WINDS')) {
-        const windMatch = line.match(/WINDS\s+([A-Z\s\/]+?)(?=\s+(?:\d|GUSTS))(?:\s+(\d+\s*(?:TO\s*\d+)?\s*MS))?(?:\s+GUSTS\s+(\d+\s*(?:TO\s*\d+)?\s*MS))?/i);
+        const windMatch = line.match(/WINDS\s+([A-Z\s\/]+?)(?:\s+(\d+\s*(?:TO\s*\d+)?\s*MS))?(?:\s+GUSTS\s*(\d+\s*(?:TO\s*\d+)?\s*MS))?/i);
         if (windMatch) {
           if (!context.currentForecast) {
             context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' } };
           }
           context.currentForecast.wind = {
             direction: windMatch[1].trim(),
-            speed: windMatch[2] || windMatch[3] || '',
+            speed: windMatch[2] || '',
             gusts: windMatch[3] || undefined,
           };
         }
