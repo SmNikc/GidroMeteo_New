@@ -109,6 +109,12 @@ function decodeTemperatureGroup(group: string): string {
   return `${sn}${temp} градусов`;
 }
 
+function decodeDewPointGroup(group: string): string {
+  const sn = group[1] === "1" ? "минус" : "+";
+  const temp = parseInt(group.substring(2)) / 10;
+  return `${sn}${temp} градусов`;
+}
+
 function decodeVisibilityGroup(group: string): string {
   const vv = group[4] + group[5];
   const visibilityDesc = {
@@ -228,9 +234,11 @@ function processLine(line: string, context: FSMContext): void {
                 speed,
                 gusts: windMatch[3] || undefined,
               };
+              appendLine(i18n.__('wind') + `: ${windMatch[1]} ${speed}${windMatch[3] ? ` ${i18n.__('gusts')} ${windMatch[3]}` : ''} ${i18n.__('ms')}`);
             }
           } else {
             context.currentForecast.timeRange = { from: i18n.__(line.trim().toLowerCase()), to: '' };
+            appendLine(i18n.__('time_range', { from: i18n.__(line.trim().toLowerCase()), to: '' }));
           }
         } else if (upperLine.includes('NAVAREA') || upperLine.includes('METAREA')) {
           context.message.sections!.header.push(line);
@@ -459,7 +467,6 @@ function processLine(line: string, context: FSMContext): void {
           }
           context.state = State.INITIAL;
         } else if (upperLine.match(/^\d{5}$/)) {
-          // WMO groups
           const group = line;
           if (!context.currentForecast) {
             context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' } };
@@ -745,7 +752,6 @@ function processLine(line: string, context: FSMContext): void {
           }
         }
       } else if (context.message.type === 'KN01') {
-        // Similar to PART_1 for KN01
         if (upperLine.match(/^\d{5}$/)) {
           if (context.currentForecast && (context.currentForecast.wind.speed || context.currentForecast.seas || context.currentForecast.temperature || context.currentForecast.visibility || context.currentForecast.pressure || context.currentForecast.precipitation)) {
             context.message.sections!.part1.push(context.currentForecast);
@@ -795,7 +801,6 @@ function processLine(line: string, context: FSMContext): void {
           context.state = upperLine.includes('333') ? State.PART_3 : State.PART_1;
           appendLine(`Секция: ${upperLine}`);
         } else if (upperLine.match(/^\d{5}$/) && context.state !== State.HEADER) {
-          // WMO groups
           const group = line;
           if (!context.currentForecast) {
             context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' } };
@@ -1011,58 +1016,70 @@ function formatMessage(messages: WeatherMessage[]): string {
       });
     }
 
-    // Часть 1
-    if (message.sections?.part1) {
-      appendLine(`=== ${i18n.__('part_1')} ===`);
-      message.sections.part1.forEach(forecast => {
-        if (forecast.region) appendLine(i18n.__(forecast.region.toLowerCase()), 1);
-        if (forecast.stationCodes.length) appendLine(`${forecast.stationCodes.join(', ')}`, 1);
-        if (forecast.timeRange.from) {
-          const to = forecast.timeRange.to ? ` по ${forecast.timeRange.to}` : '';
-          appendLine(`${i18n.__('time_range', { from: forecast.timeRange.from, to })}`, 1);
-        }
-        if (forecast.wind.direction || forecast.wind.speed || forecast.wind.gusts) {
-          appendLine(`${i18n.__('wind')}: ${forecast.wind.direction} ${forecast.wind.speed}${forecast.wind.gusts ? ` ${i18n.__('gusts')} ${forecast.wind.gusts}` : ''} ${i18n.__('ms')}`, 1);
-        }
-        if (forecast.temperature) appendLine(`${i18n.__('temperature')}: ${forecast.temperature}`, 1);
-        if (forecast.visibility) appendLine(`${i18n.__('visibility')}: ${forecast.visibility}`, 1);
-        if (forecast.seas) appendLine(`${i18n.__('seas')}: ${forecast.seas}`, 1);
-        if (forecast.iceAccretion) appendLine(`${i18n.__('ice_accretion')}: ${forecast.iceAccretion}`, 1);
-        if (forecast.pressure) appendLine(`${i18n.__('pressure')}: ${forecast.pressure}`, 1);
-        if (forecast.precipitation) appendLine(`${i18n.__('precipitation')}: ${forecast.precipitation}`, 1);
-      });
-    }
-
-    // Часть 2
-    if (message.sections?.part2) {
-      appendLine(`=== ${i18n.__('part_2')} ===`);
-      if (message.sections.part2.synopsis) {
-        appendLine(`${i18n.__('synopsis')} ${message.sections.part2.synopsis.time}`, 1);
-        message.sections.part2.synopsis.pressures.forEach(pressure => {
-          appendLine(`${i18n.__(pressure.type.toLowerCase())}: ${pressure.position}${pressure.movement ? `, ${i18n.__('movement')}: ${pressure.movement}` : ''}`, 2);
+// Часть 1
+      if (message.sections?.part1) {
+        appendLine(`=== ${i18n.__('part_1')} ===`);
+        message.sections.part1.forEach(forecast => {
+          if (forecast.region) appendLine(i18n.__(forecast.region.toLowerCase()), 1);
+          if (forecast.stationCodes.length) appendLine(`${forecast.stationCodes.join(', ')}`, 1);
+          if (forecast.timeRange.from) {
+            const to = forecast.timeRange.to ? ` по ${forecast.timeRange.to}` : '';
+            appendLine(`${i18n.__('time_range', { from: forecast.timeRange.from, to })}`, 1);
+          }
+          if (forecast.wind.direction || forecast.wind.speed || forecast.wind.gusts) {
+            appendLine(`${i18n.__('wind')}: ${forecast.wind.direction} ${forecast.wind.speed}${forecast.wind.gusts ? ` ${i18n.__('gusts')} ${forecast.wind.gusts}` : ''} ${i18n.__('ms')}`, 1);
+          }
+          if (forecast.temperature) appendLine(`${i18n.__('temperature')}: ${forecast.temperature}`, 1);
+          if (forecast.visibility) appendLine(`${i18n.__('visibility')}: ${forecast.visibility}`, 1);
+          if (forecast.seas) appendLine(`${i18n.__('seas')}: ${forecast.seas}`, 1);
+          if (forecast.iceAccretion) appendLine(`${i18n.__('ice_accretion')}: ${forecast.iceAccretion}`, 1);
+          if (forecast.pressure) appendLine(`${i18n.__('pressure')}: ${forecast.pressure}`, 1);
+          if (forecast.precipitation) appendLine(`${i18n.__('precipitation')}: ${forecast.precipitation}`, 1);
         });
       }
-      if (message.sections.part2.iceReports) {
-        message.sections.part2.iceReports.forEach(report => {
-          appendLine(`${i18n.__('ice')} ${report.region}`, 1);
-          appendLine(`${i18n.__('ice_direction', { direction: report.direction })}: ${report.coordinates.join(', ')}`, 2);
+
+      // Часть 2
+      if (message.sections?.part2) {
+        appendLine(`=== ${i18n.__('part_2')} ===`);
+        if (message.sections.part2.synopsis) {
+          appendLine(`${i18n.__('synopsis')} ${message.sections.part2.synopsis.time}`, 1);
+          message.sections.part2.synopsis.pressures.forEach(pressure => {
+            appendLine(`${i18n.__(pressure.type.toLowerCase())}: ${pressure.position}${pressure.movement ? `, ${i18n.__('movement')}: ${pressure.movement}` : ''}`, 2);
+          });
+        }
+        if (message.sections.part2.iceReports) {
+          message.sections.part2.iceReports.forEach(report => {
+            appendLine(`${i18n.__('ice')} ${report.region}`, 1);
+            appendLine(`${i18n.__('ice_direction', { direction: report.direction })}: ${report.coordinates.join(', ')}`, 2);
+          });
+        }
+      }
+
+      // Часть 3
+      if (message.sections?.part3.length > 0) {
+        appendLine(`=== ${i18n.__('part_3')} ===`);
+        message.sections.part3.forEach(forecast => {
+          if (forecast.region) appendLine(i18n.__(forecast.region.toLowerCase()), 1);
+          if (forecast.stationCodes.length) appendLine(`${forecast.stationCodes.join(', ')}`, 1);
+          if (forecast.timeRange.from) {
+            const to = forecast.timeRange.to ? ` по ${forecast.timeRange.to}` : '';
+            appendLine(`${i18n.__('time_range', { from: forecast.timeRange.from, to })}`, 1);
+          }
+          if (forecast.wind.direction || forecast.wind.speed || forecast.wind.gusts) {
+            appendLine(`${i18n.__('wind')}: ${forecast.wind.direction} ${forecast.wind.speed}${forecast.wind.gusts ? ` ${i18n.__('gusts')} ${forecast.wind.gusts}` : ''} ${i18n.__('ms')}`, 1);
+          }
+          if (forecast.temperature) appendLine(`${i18n.__('temperature')}: ${forecast.temperature}`, 1);
+          if (forecast.visibility) appendLine(`${i18n.__('visibility')}: ${forecast.visibility}`, 1);
+          if (forecast.seas) appendLine(`${i18n.__('seas')}: ${forecast.seas}`, 1);
+          if (forecast.iceAccretion) appendLine(`${i18n.__('ice_accretion')}: ${forecast.iceAccretion}`, 1);
+          if (forecast.pressure) appendLine(`${i18n.__('pressure')}: ${forecast.pressure}`, 1);
+          if (forecast.precipitation) appendLine(`${i18n.__('precipitation')}: ${forecast.precipitation}`, 1);
         });
       }
-    }
+    });
+  });
 
-    // Часть 3
-    if (message.sections?.part3.length > 0) {
-      appendLine(`=== ${i18n.__('part_3')} ===`);
-      message.sections.part3.forEach(forecast => {
-        if (forecast.region) appendLine(i18n.__(forecast.region.toLowerCase()), 1);
-        if (forecast.stationCodes.length) appendLine(`${forecast.stationCodes.join(', ')}`, 1);
-        if (forecast.timeRange.from) {
-          const to = forecast.timeRange.to ? ` по ${forecast.timeRange.to}` : '';
-          appendLine(`${i18n.__('time_range', { from: forecast.timeRange.from, to })}`, 1);
-        }
-        if (forecast.wind.direction || forecast.wind.speed || forecast.wind.gusts) {
-          appendLine(`${i18n.__('wind')}: ${forecast.wind.direction} ${forecast.wind.speed}${forecast.wind.gusts ? ` ${i18n.__('gusts')} ${forecast.wind.gusts}` : ''} ${i18n.__('ms')}`, 1);
-        }
-        if (forecast.temperature) appendLine(`${i18n.__('temperature')}: ${forecast.temperature}`, 1);
-        if (forecast.visibility) appendLine(`${i18n.__('visibility')}: ${forecast.visibility}`, 1);
-        if (forecast.seas) append
+  return output;
+}
+
+export { decodeMessage, decodeKN01, formatMessage };
