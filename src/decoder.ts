@@ -148,8 +148,7 @@ function processLine(line: string, context: FSMContext): void {
         context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' } };
       } else if (upperLine.includes('WINDS') || upperLine.includes('SECOND HALF NIGHT')) {
         context.state = State.PART_1;
-        context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' } };
-        processLine(line, context);
+        context.currentForecast = { stationCodes: [], timeRange: { from: line.trim(), to: '' }, wind: { direction: '', speed: '' } };
       } else if (upperLine === 'NNNN') {
         context.state = State.INITIAL;
       } else if (/^\d{6}\s+UTC\s+[A-Z]{3}\s+\d{2}$/.test(upperLine)) {
@@ -199,6 +198,11 @@ function processLine(line: string, context: FSMContext): void {
           from = line.trim();
         }
         context.currentForecast.timeRange = { from, to };
+      } else if (/SECOND HALF NIGHT|FIRST HALF DAY|NIGHT/i.test(upperLine)) {
+        if (!context.currentForecast) {
+          context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' } };
+        }
+        context.currentForecast.timeRange = { from: line.trim(), to: '' };
       } else if (upperLine.includes('WINDS')) {
         const windMatch = line.match(/WINDS\s+([A-Z\s\/]+?)(?=\s+(?:\d|GUSTS))(?:\s+(\d+\s*(?:TO\s*\d+)?\s*MS))?(?:\s+GUSTS\s+(\d+\s*(?:TO\s*\d+)?\s*MS))?/i);
         if (windMatch) {
@@ -238,10 +242,19 @@ function processLine(line: string, context: FSMContext): void {
         }
         context.state = State.INITIAL;
       } else if (upperLine.includes('PETER THE GREAT GULF') || upperLine.includes('REGION')) {
-        if (context.currentForecast && (context.currentForecast.wind.speed || context.currentForecast.timeRange.from || context.currentForecast.seas || context.currentForecast.temperature || context.currentForecast.visibility)) {
-          context.message.sections.part1.push(context.currentForecast);
+        if (context.currentForecast) {
+          const hasOtherData = context.currentForecast.wind.speed || context.currentForecast.seas || context.currentForecast.temperature || context.currentForecast.visibility;
+          if (!hasOtherData && context.currentForecast.timeRange.from && !context.currentForecast.region) {
+            context.currentForecast.region = line;
+          } else {
+            if (context.currentForecast.wind.speed || context.currentForecast.timeRange.from || context.currentForecast.seas || context.currentForecast.temperature || context.currentForecast.visibility) {
+              context.message.sections.part1.push(context.currentForecast);
+            }
+            context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' }, region: line };
+          }
+        } else {
+          context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' }, region: line };
         }
-        context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' }, region: line };
       }
       break;
 
@@ -356,7 +369,11 @@ function processLine(line: string, context: FSMContext): void {
         context.currentForecast.iceAccretion = line.replace(/^ICE ACCRETION\s+/, '');
       } else if (upperLine === 'NNNN') {
         if (context.currentForecast && (context.currentForecast.wind.speed || context.currentForecast.seas || context.currentForecast.temperature || context.currentForecast.visibility || context.currentForecast.timeRange.from)) {
-          context.message.sections.part3.push(context.currentForecast);
+          if (context.message.sections.part3) {
+            context.message.sections.part3.push(context.currentForecast);
+          } else {
+            context.message.sections.part1.push(context.currentForecast);
+          }
           context.currentForecast = undefined;
           context.currentStationCodes = undefined;
         }
@@ -383,10 +400,23 @@ function processLine(line: string, context: FSMContext): void {
         }
         context.currentForecast.timeRange = { from: line.trim(), to: '' };
       } else if (upperLine.includes('PETER THE GREAT GULF') || upperLine.includes('REGION')) {
-        if (context.currentForecast && (context.currentForecast.wind.speed || context.currentForecast.timeRange.from || context.currentForecast.seas || context.currentForecast.temperature || context.currentForecast.visibility)) {
-          context.message.sections.part3.push(context.currentForecast);
+        if (context.currentForecast) {
+          const hasOtherData = context.currentForecast.wind.speed || context.currentForecast.seas || context.currentForecast.temperature || context.currentForecast.visibility;
+          if (!hasOtherData && context.currentForecast.timeRange.from && !context.currentForecast.region) {
+            context.currentForecast.region = line;
+          } else {
+            if (context.currentForecast.wind.speed || context.currentForecast.timeRange.from || context.currentForecast.seas || context.currentForecast.temperature || context.currentForecast.visibility) {
+              if (context.message.sections.part3) {
+                context.message.sections.part3.push(context.currentForecast);
+              } else {
+                context.message.sections.part1.push(context.currentForecast);
+              }
+            }
+            context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' }, region: line };
+          }
+        } else {
+          context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' }, region: line };
         }
-        context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' }, region: line };
       }
       break;
 
