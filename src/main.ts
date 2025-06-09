@@ -1,4 +1,3 @@
-```typescript
 import * as fs from 'fs';
 import * as path from 'path';
 import { decodeMessage, formatMessage } from './decoder';
@@ -29,4 +28,3 @@ try {
   console.error(i18n.__('error_read_file', { message: err.message }));
   process.exit(1);
 }
-```
