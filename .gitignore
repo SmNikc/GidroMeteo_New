@@ -4,3 +4,5 @@ dist/
 *.log
 output.txt
 currents.txt
+~$*.docx
+*.lnk

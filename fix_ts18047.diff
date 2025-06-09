@@ -1,0 +1,46 @@
+diff --git a/src/decoder.ts b/src/decoder.ts
+index 949dc3f..0532072 100644
+--- a/src/decoder.ts
++++ b/src/decoder.ts
+@@ -190,10 +190,14 @@ function processLine(line: string, context: FSMContext): void {
+         if (!context.currentForecast) {
+           context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' } };
+         }
+-        const timeMatch = upperLine.startsWith('FROM') 
+-          ? line.match(/^FROM\s+(.+?)\s+TO\s+(.+)/i) 
+-          : [, line, ''];
+-        context.currentForecast.timeRange = { 
+-          from: timeMatch[1] || line.trim(), 
+-          to: timeMatch[2] || '' 
+-        };
++        let from = line.trim();
++        let to = '';
++        if (upperLine.startsWith('FROM')) {
++          const timeMatch = line.match(/^FROM\s+(.+?)\s+TO\s+(.+)/i);
++          if (timeMatch) {
++            from = timeMatch[1].trim();
++            to = timeMatch[2].trim();
++          }
++        }
++        context.currentForecast.timeRange = { from, to };
+@@ -363,10 +363,14 @@ function processLine(line: string, context: FSMContext): void {
+         if (!context.currentForecast) {
+           context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' } };
+         }
+-        const timeMatch = upperLine.startsWith('FROM') 
+-          ? line.match(/^FROM\s+(.+?)\s+TO\s+(.+)/i) 
+-          : [, line, ''];
+-        context.currentForecast.timeRange = { 
+-          from: timeMatch[1] || line.trim(), 
+-          to: timeMatch[2] || '' 
+-        };
++        let from = line.trim();
++        let to = '';
++        if (upperLine.startsWith('FROM')) {
++          const timeMatch = line.match(/^FROM\s+(.+?)\s+TO\s+(.+)/i);
++          if (timeMatch) {
++            from = timeMatch[1].trim();
++            to = timeMatch[2].trim();
++          }
++        }
++        context.currentForecast.timeRange = { from, to };

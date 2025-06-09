@@ -1,0 +1,24 @@
+diff --git a/src/decoder.ts b/src/decoder.ts
+index 0532072..1a2b3c4 100644
+--- a/src/decoder.ts
++++ b/src/decoder.ts
+@@ -194,6 +194,7 @@ function processLine(line: string, context: FSMContext): void {
+           const timeMatch = line.match(/^FROM\s+(.+?)\s+TO\s+(.+)/i);
+           if (timeMatch) {
+             from = timeMatch[1].trim();
+             to = timeMatch[2].trim();
+           }
++        } else {
++          from = line.trim();
+         }
+         context.currentForecast.timeRange = { from, to };
+@@ -367,6 +368,7 @@ function processLine(line: string, context: FSMContext): void {
+           const timeMatch = line.match(/^FROM\s+(.+?)\s+TO\s+(.+)/i);
+           if (timeMatch) {
+             from = timeMatch[1].trim();
+             to = timeMatch[2].trim();
+           }
++        } else {
++          from = line.trim();
+         }
+         context.currentForecast.timeRange = { from, to };
