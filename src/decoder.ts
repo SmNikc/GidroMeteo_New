@@ -12,13 +12,13 @@ i18n.configure({
 i18n.setLocale('ru');
 
 // Типы данных (модель)
-interface WeatherStation {
+export interface WeatherStation {
   code: string;
   name: string;
   coordinates: string;
 }
 
-interface Forecast {
+export interface Forecast {
   stationCodes: string[];
   timeRange: { from: string; to: string };
   wind: { direction: string; speed: string; gusts?: string };
@@ -31,18 +31,18 @@ interface Forecast {
   precipitation?: string;
 }
 
-interface IceReport {
+export interface IceReport {
   region: string;
   direction: string;
   coordinates: string[];
 }
 
-interface Synopsis {
+export interface Synopsis {
   time: string;
   pressures: Array<{ type: 'LOW' | 'HIGH' | 'INFO'; hpa: string; position: string; movement?: string }>;
 }
 
-interface WeatherMessage {
+export interface WeatherMessage {
   type: 'KN01' | 'SafetyNet' | 'NAVTEX';
   date: string;
   source: string;
@@ -138,7 +138,7 @@ function decodePrecipitationGroup(group: string): string {
 }
 
 // Декодирование сообщения
-function decodeMessage(input: string): WeatherMessage[] {
+export function decodeMessage(input: string): WeatherMessage[] {
   if (input === lastInput && cachedMessages) {
     return cachedMessages;
   }
