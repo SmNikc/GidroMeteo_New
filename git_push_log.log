@@ -1,0 +1,7 @@
+[--08.06.2025 17:02] "Исправление timeRange, ветра, регионов, моря и HTML-кодировки" 
+[--09.06.2025 9:25] "Added timeRange handling for SECOND HALF NIGHT in PART_3 (550 lines)" 
+09.06.2025  9:36:22,42: Current decoder.ts with failing test for Codex review (550 lines) 
+09.06.2025 10:49:10,64: Updated region handling and main.ts for Codex fixes (552 lines) 
+09.06.2025 15:43:53,87: Fixed wind parsing for test success (552 lines) 
+09.06.2025 19:09:38,40: Implemented two-step WINDS parsing to fix gusts and direction (550 lines) 
+09.06.2025 22:28:14,15: Added KN-01, NAVTEX, and enhanced SafetyNet with translations (560 lines) 

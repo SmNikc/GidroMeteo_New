@@ -1,0 +1,82 @@
+ (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
+diff --git a/src/decoder.ts b/src/decoder.ts
+index 815bfcaab7866f4aadfd2e33b858f06cb01cfb28..71eedef1c7d53ffbeb89eeb0b02d57ed6742bdf4 100644
+--- a/src/decoder.ts
++++ b/src/decoder.ts
+@@ -1,68 +1,68 @@
+ import * as fs from 'fs';
+ import * as i18n from 'i18n';
+ import * as path from 'path';
+ 
+ // Настройка i18n
+ i18n.configure({
+   locales: ['ru'],
+   directory: path.join(__dirname, 'i18n'),
+   defaultLocale: 'ru',
+   objectNotation: true,
+ });
+ i18n.setLocale('ru');
+ 
+ // Типы данных (модель)
+-interface WeatherStation {
++export interface WeatherStation {
+   code: string;
+   name: string;
+   coordinates: string;
+ }
+ 
+-interface Forecast {
++export interface Forecast {
+   stationCodes: string[];
+   timeRange: { from: string; to: string };
+   wind: { direction: string; speed: string; gusts?: string };
+   temperature?: string;
+   visibility?: string;
+   seas?: string;
+   iceAccretion?: string;
+   region?: string;
+ }
+ 
+-interface IceReport {
++export interface IceReport {
+   region: string;
+   direction: string;
+   coordinates: string[];
+ }
+ 
+-interface Synopsis {
++export interface Synopsis {
+   time: string;
+   pressures: Array<{ type: 'LOW' | 'HIGH' | 'INFO'; hpa: string; position: string; movement?: string }>;
+ }
+ 
+-interface WeatherMessage {
++export interface WeatherMessage {
+   type: 'KN01' | 'SafetyNet';
+   date: string;
+   source: string;
+   sections: {
+     header: string[];
+     part1: Forecast[];
+     part2?: { synopsis?: Synopsis; iceReports?: IceReport[] };
+     part3: Forecast[];
+   };
+ }
+ 
+ // Кэш для результатов декодирования
+ let lastInput: string | null = null;
+ let cachedMessages: WeatherMessage[] | null = null;
+ 
+ // Загрузка станций
+ const stations: { [key: string]: string } = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/stations.json'), 'utf8'));
+ 
+ // Конечный автомат
+ enum State {
+   INITIAL,
+   HEADER,
+   PART_1,
+   PART_2,
+   PART_3,
+ 
+EOF
+)

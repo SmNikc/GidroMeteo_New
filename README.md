@@ -85,3 +85,37 @@ GidroMeteo_New/
 ├── package-lock.json
 ├── tsconfig.json
 └── .gitignore          # Создать вручную (выше указано содержимое)
+===============
+GidroMeteo_New
+ Проект для декодирования метеорологических сообщений форматов КН-01, NAVTEX и SafetyNet.
+
+ ## Структура проекта
+ - `src/decoder.ts`: Основная логика декодирования.
+ - `tests/decoder.test.ts`: Тесты для проверки функциональности.
+ - `src/i18n/ru.json`: Локализация на русском языке.
+ - `data/input_kn01.txt`, `data/input_navtex.txt`: Входные файлы для тестирования.
+ - `data/output.txt`: Результаты обработки.
+ - `data/stations.json`: Справочник метеостанций.
+
+ ## Установка
+ ```bash
+ npm install
+ ```
+
+ ## Сборка
+ ```bash
+ npm run build
+ ```
+
+ ## Тесты
+ ```bash
+ npm test
+ ```
+
+ ## Запуск
+ ```bash
+ cd dist
+ node main.js ../data/input_kn01.txt
+ node main.js ../data/input_navtex.txt
+ ```
+

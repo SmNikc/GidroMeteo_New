@@ -1,0 +1,118 @@
+diff --git a/src/decoder.ts b/src/decoder.ts
+index 26e259bc0fcc7c36ef521935cf200ed594897297..98f5dd955a428ba3d25c7ad06f755b1a132ff193 100644
+--- a/src/decoder.ts
++++ b/src/decoder.ts
+@@ -778,51 +778,51 @@ function processLine(line: string, context: FSMContext): void {
+           }
+           const wavesMatch = line.match(/WAVES\s+(\d+(?:,\d+)?)\s*TO\s*(\d+(?:,\d+)?)\s*M/i);
+           if (wavesMatch) {
+             context.currentForecast.seas = `${wavesMatch[1]} TO ${wavesMatch[2]} M`;
+             appendLine(i18n.__('seas') + `: ${wavesMatch[1]} до ${wavesMatch[2]} м`);
+           }
+         } else if (upperLine.includes('TEMP')) {
+           if (!context.currentForecast) {
+             context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' } };
+           }
+           context.currentForecast.temperature = decodeTemperatureGroup(line.replace(/^TEMPERATURE\s+/, ''));
+           appendLine(i18n.__('temperature') + `: ${context.currentForecast.temperature}`);
+         } else if (upperLine.includes('VIS')) {
+           if (!context.currentForecast) {
+             context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' } };
+           }
+           context.currentForecast.visibility = decodeVisibilityGroup(line.replace(/^VIS\s+/, ''));
+           appendLine(i18n.__('visibility') + `: ${context.currentForecast.visibility}`);
+         } else if (upperLine.includes('333') || upperLine.includes('555')) {
+           if (context.currentForecast && (context.currentForecast.wind.speed || context.currentForecast.seas || context.currentForecast.temperature || context.currentForecast.visibility || context.currentForecast.pressure || context.currentForecast.precipitation)) {
+             context.message.sections!.part1.push(context.currentForecast);
+             context.currentForecast = undefined;
+           }
+           context.state = upperLine.includes('333') ? State.PART_3 : State.PART_1;
+           appendLine(`Секция: ${upperLine}`);
+-        } else if (upperLine.match(/^\d{5}$/) && context.state !== State.HEADER) {
++        } else if (upperLine.match(/^\d{5}$/)) {
+           const group = line;
+           if (!context.currentForecast) {
+             context.currentForecast = { stationCodes: [], timeRange: { from: '', to: '' }, wind: { direction: '', speed: '' } };
+           }
+           switch (group[0]) {
+             case '1':
+               if (group.startsWith('11')) {
+                 context.currentForecast.temperature = decodeTemperatureGroup(group);
+                 appendLine(i18n.__('temperature') + `: ${context.currentForecast.temperature}`);
+               } else if (group.startsWith('12')) {
+                 appendLine(`Точка росы: ${decodeDewPointGroup(group)}`);
+               } else {
+                 context.currentForecast.visibility = decodeVisibilityGroup(group);
+                 appendLine(i18n.__('visibility') + `: ${context.currentForecast.visibility}`);
+               }
+               break;
+             case '2':
+               const wind = decodeWMOGroup(group);
+               context.currentForecast.wind = {
+                 direction: wind.direction,
+                 speed: wind.speed,
+                 gusts: undefined,
+               };
+               appendLine(i18n.__('wind') + `: ${wind.direction} ${wind.speed}`);
+               break;
+diff --git a/src/decoder.ts b/src/decoder.ts
+index 26e259bc0fcc7c36ef521935cf200ed594897297..98f5dd955a428ba3d25c7ad06f755b1a132ff193 100644
+--- a/src/decoder.ts
++++ b/src/decoder.ts
+@@ -1034,52 +1034,52 @@ function formatMessage(messages: WeatherMessage[]): string {
+           if (forecast.seas) appendLine(`${i18n.__('seas')}: ${forecast.seas}`, 1);
+           if (forecast.iceAccretion) appendLine(`${i18n.__('ice_accretion')}: ${forecast.iceAccretion}`, 1);
+           if (forecast.pressure) appendLine(`${i18n.__('pressure')}: ${forecast.pressure}`, 1);
+           if (forecast.precipitation) appendLine(`${i18n.__('precipitation')}: ${forecast.precipitation}`, 1);
+         });
+       }
+ 
+       // Часть 2
+       if (message.sections?.part2) {
+         appendLine(`=== ${i18n.__('part_2')} ===`);
+         if (message.sections.part2.synopsis) {
+           appendLine(`${i18n.__('synopsis')} ${message.sections.part2.synopsis.time}`, 1);
+           message.sections.part2.synopsis.pressures.forEach(pressure => {
+             appendLine(`${i18n.__(pressure.type.toLowerCase())}: ${pressure.position}${pressure.movement ? `, ${i18n.__('movement')}: ${pressure.movement}` : ''}`, 2);
+           });
+         }
+         if (message.sections.part2.iceReports) {
+           message.sections.part2.iceReports.forEach(report => {
+             appendLine(`${i18n.__('ice')} ${report.region}`, 1);
+             appendLine(`${i18n.__('ice_direction', { direction: report.direction })}: ${report.coordinates.join(', ')}`, 2);
+           });
+         }
+       }
+ 
+       // Часть 3
+-      if (message.sections?.part3.length > 0) {
++      const part3 = message.sections?.part3;
++      if (part3 && part3.length > 0) {
+         appendLine(`=== ${i18n.__('part_3')} ===`);
+-        message.sections.part3.forEach(forecast => {
++        part3.forEach(forecast => {
+           if (forecast.region) appendLine(i18n.__(forecast.region.toLowerCase()), 1);
+           if (forecast.stationCodes.length) appendLine(`${forecast.stationCodes.join(', ')}`, 1);
+           if (forecast.timeRange.from) {
+             const to = forecast.timeRange.to ? ` по ${forecast.timeRange.to}` : '';
+             appendLine(`${i18n.__('time_range', { from: forecast.timeRange.from, to })}`, 1);
+           }
+           if (forecast.wind.direction || forecast.wind.speed || forecast.wind.gusts) {
+             appendLine(`${i18n.__('wind')}: ${forecast.wind.direction} ${forecast.wind.speed}${forecast.wind.gusts ? ` ${i18n.__('gusts')} ${forecast.wind.gusts}` : ''} ${i18n.__('ms')}`, 1);
+           }
+           if (forecast.temperature) appendLine(`${i18n.__('temperature')}: ${forecast.temperature}`, 1);
+           if (forecast.visibility) appendLine(`${i18n.__('visibility')}: ${forecast.visibility}`, 1);
+           if (forecast.seas) appendLine(`${i18n.__('seas')}: ${forecast.seas}`, 1);
+           if (forecast.iceAccretion) appendLine(`${i18n.__('ice_accretion')}: ${forecast.iceAccretion}`, 1);
+           if (forecast.pressure) appendLine(`${i18n.__('pressure')}: ${forecast.pressure}`, 1);
+           if (forecast.precipitation) appendLine(`${i18n.__('precipitation')}: ${forecast.precipitation}`, 1);
+         });
+       }
+-    });
+   });
+ 
+   return output;
+ }
+ 
+-export { decodeMessage, decodeKN01, formatMessage };
++export { decodeKN01, formatMessage };
