@@ -1,8 +1,4 @@
 node_modules/
-dist/
-.env
-*.log
-output.txt
-currents.txt
-~$*.docx
-*.lnk
+     dist/
+     *.log"*.diff" 
+"*.patch" 
